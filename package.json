@@ -1,0 +1,16 @@
+{
+  "name": "curly-server",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "dev:express": "nodemon mockServer/server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "express": "^4.16.4"
+  },
+  "dependencies": {
+    "mongoose": "^5.4.7"
+  }
+}
