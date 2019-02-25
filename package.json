@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "dev:express": "nodemon mockServer/server.js"
+    "dev:express": "nodemon mockServer/server.js",
+    "dev:mongod": "mongod --config /usr/local/etc/mongod.conf"
   },
   "author": "",
   "license": "ISC",
