@@ -1,10 +1,10 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const bodyParser = require('body-parser')
+const cookieParser = require('cookie-parser')
 
 const userRouter = require('./user');
 const app = express();
-
-const userModel = require('./models/user')
 
 //連接mongo并使用curly这个集合
 const DB_URL = "mongodb://localhost:27017/"
@@ -15,6 +15,9 @@ mongoose.connect(DB_URL+"curly", { useNewUrlParser: true }, function (err) {
         console.log('mongodb Connection success!')
     }
 })
+
+app.use(cookieParser())
+app.use(bodyParser.json())
 
 app.use('/user', userRouter)
 
