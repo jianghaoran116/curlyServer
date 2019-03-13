@@ -14,6 +14,7 @@
   "dependencies": {
     "body-parser": "^1.18.3",
     "cookie-parser": "^1.4.4",
-    "mongoose": "^5.4.7"
+    "mongoose": "^5.4.7",
+    "utility": "^1.15.1"
   }
 }

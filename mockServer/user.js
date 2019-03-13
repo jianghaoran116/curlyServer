@@ -1,7 +1,13 @@
 const express = require('express')
+const utils = require('utility')
 const userModel = require('./models/user')
 
 const Router = express.Router();
+
+function md5pwd(pwd) {
+  let salt = "curly@#@=.=~~~!SPA~~~"
+  return utils.md5(utils.md5(pwd+salt))
+}
 
 Router.get('/list', function(req, res){
   userModel.find({}, function(err, doc) {
@@ -19,7 +25,7 @@ Router.post('/register', function(req, res){
         msg: '用户名已存在'
       })
     } else {
-      userModel.create({user, pwd, type}, function(e, d) {
+      userModel.create({user, pwd: md5pwd(pwd), type}, function(e, d) {
         if(e) {
           return res.json({
             code: 1,
