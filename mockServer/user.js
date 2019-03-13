@@ -10,6 +10,7 @@ function md5pwd(pwd) {
 }
 
 Router.get('/list', function(req, res){
+  // userModel.remove({}, function(e, d) {})
   userModel.find({}, function(err, doc) {
     return res.json(doc)
   })
@@ -36,6 +37,23 @@ Router.post('/register', function(req, res){
             code: 0
           })
         }
+      })
+    }
+  })
+})
+
+Router.post('/login', function(req, res){
+  const {user, pwd} = req.body;
+  userModel.findOne({user, pwd: md5pwd(pwd)}, {pwd: 0}, function(err, doc) {
+    if(!doc) {
+      return res.json({
+        code: 1,
+        msg: '用户名或密码错误'
+      })
+    } else {
+      return res.json({
+        code: 0,
+        data: doc
       })
     }
   })
