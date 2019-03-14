@@ -4,6 +4,8 @@ const userModel = require('./models/user')
 
 const Router = express.Router();
 
+const _filter = {pwd: 0, __v: 0}
+
 function md5pwd(pwd) {
   let salt = "curly@#@=.=~~~!SPA~~~"
   return utils.md5(utils.md5(pwd+salt))
@@ -26,31 +28,51 @@ Router.post('/register', function(req, res){
         msg: '用户名已存在'
       })
     } else {
-      userModel.create({user, pwd: md5pwd(pwd), type}, function(e, d) {
+
+      const User = new userModel({user, pwd: md5pwd(pwd), type})
+
+      User.save(function(e, d) {   
         if(e) {
           return res.json({
             code: 1,
             msg: '未知错误'
           })
         } else {
+          const {userid, type, _id} = d
+          res.cookie('userid', _id)
           return res.json({
-            code: 0
+            code: 0,
+            data: {userid, type, _id} 
           })
         }
       })
+
+      // userModel.create({user, pwd: md5pwd(pwd), type}, function(e, d) {
+      //   if(e) {
+      //     return res.json({
+      //       code: 1,
+      //       msg: '未知错误'
+      //     })
+      //   } else {
+      //     return res.json({
+      //       code: 0
+      //     })
+      //   }
+      // })
     }
   })
 })
 
 Router.post('/login', function(req, res){
   const {user, pwd} = req.body;
-  userModel.findOne({user, pwd: md5pwd(pwd)}, {pwd: 0}, function(err, doc) {
+  userModel.findOne({user, pwd: md5pwd(pwd)}, _filter, function(err, doc) {
     if(!doc) {
       return res.json({
         code: 1,
         msg: '用户名或密码错误'
       })
     } else {
+      res.cookie('userid', doc._id)
       return res.json({
         code: 0,
         data: doc
@@ -60,7 +82,18 @@ Router.post('/login', function(req, res){
 })
 
 Router.get('/info', function(req, res){
-  return res.json({code: 1})
+  const {userid} = req.cookies;
+  console.log(userid)
+  if(!userid) {
+    return res.json({code: 1})
+  }
+
+  userModel.findOne({_id: userid}, _filter, function(e,d) {
+    if(e) {
+      return res.json({code: 1, msg: 'not find user'})
+    }
+    return res.json({code: 0, data: d})
+  })
 })
 
 module.exports = Router
