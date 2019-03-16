@@ -14,7 +14,7 @@ const User = mongoose.model('User', UserSchema)
 //     }
 // })
 
-// User.remove({age: 18}, function(err, doc) {
+// User.remove({name: 'mama'}, function(err, doc) {
 //     console.log(doc)
 // })
 
