@@ -13,9 +13,14 @@ function md5pwd(pwd) {
 
 Router.get('/list', function(req, res){
   // userModel.remove({}, function(e, d) {})
-  userModel.find({}, function(err, doc) {
-    return res.json(doc)
-  })
+  const { type } = req.query
+	// User.remove({},function(e,d){})
+	userModel.find({type},function(err,doc){
+		return res.json({code:0,data:doc})
+	})
+  // userModel.find({}, function(err, doc) {
+  //   return res.json(doc)
+  // })
 })
 
 Router.post('/register', function(req, res){
@@ -94,6 +99,21 @@ Router.get('/info', function(req, res){
     }
     return res.json({code: 0, data: d})
   })
+})
+
+Router.post('/update',function(req,res){
+  const {userid} = req.cookies;
+	if (!userid) {
+		return json.dumps({code:1})
+	}
+	const body = req.body
+	userModel.findByIdAndUpdate(userid,body,function(err,doc){
+		const data = Object.assign({},{
+			user:doc.user,
+			type:doc.type
+		},body)
+		return res.json({code:0,data})
+	})
 })
 
 module.exports = Router
