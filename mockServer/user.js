@@ -1,6 +1,8 @@
 const express = require('express')
 const utils = require('utility')
-const userModel = require('./models/user')
+const model = require('./models/user')
+const userModel = model.getModel('User')
+const chatModel = model.getModel('Chat')
 
 const Router = express.Router();
 
@@ -88,7 +90,6 @@ Router.post('/login', function(req, res){
 
 Router.get('/info', function(req, res){
   const {userid} = req.cookies;
-  console.log(userid)
   if(!userid) {
     return res.json({code: 1})
   }
@@ -114,6 +115,41 @@ Router.post('/update',function(req,res){
 		},body)
 		return res.json({code:0,data})
 	})
+})
+
+Router.get('/getmsglist',function(req,res){
+	const user = req.cookies.userid
+
+	userModel.find({},function(e, userdoc){
+		let users = {}
+		userdoc.forEach(v=>{
+			users[v._id] = {name: v.user, avatar: v.avatar}
+		})
+		chatModel.find({'$or':[{from:user},{to:user}]},function(err,doc){
+			if (!err) {
+				return res.json({code:0,msgs:doc, users:users})
+			}
+		})
+
+	})
+	// {'$or':[{from:user,to:user}]}
+
+})
+Router.post('/readmsg', function(req, res){
+	const userid = req.cookies.userid
+	const {from} = req.body
+	chatModel.update(
+		{from, to:userid},
+		{'$set': {read: true}},
+		{'multi': true},
+		function(err,doc) {
+		  console.log(doc)
+      if (!err) {
+        return res.json({code:0, num:doc.nModified})
+      }
+		  return res.json({code:1, msg:'修改失败'})
+    }
+  )
 })
 
 module.exports = Router

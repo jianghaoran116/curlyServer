@@ -1,7 +1,10 @@
 const mongoose = require('mongoose')
 
 const UserSchema = require('../schemas/user.js')
-const User = mongoose.model('User', UserSchema)
+const ChatSchema = require('../schemas/chat.js')
+
+mongoose.model('User', UserSchema)
+mongoose.model('Chat', ChatSchema)
 
 // User.create({
 //     name: 'mama',
@@ -18,4 +21,10 @@ const User = mongoose.model('User', UserSchema)
 //     console.log(doc)
 // })
 
-module.exports = User;
+// module.exports = User;
+
+module.exports = {
+	getModel:function(name){
+		return mongoose.model(name)
+	}
+}
