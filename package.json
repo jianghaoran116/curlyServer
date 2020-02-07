@@ -4,6 +4,7 @@
   "description": "",
   "scripts": {
     "dev:express": "nodemon mockServer/server.js",
+    "prod:express": "node mockServer/server.js",
     "dev:mongod": "mongod --config /usr/local/etc/mongod.conf"
   },
   "author": "",
